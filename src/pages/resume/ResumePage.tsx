@@ -7,7 +7,7 @@ import type { AwardItem } from "../../types/content";
 import { Link } from "react-router";
 
 // const pdfUrl = "/resume/resume.pdf";
-const pdfUrl = "/resume/Van-Vo-Resume.pdf";
+// const pdfUrl = "/resume/Van-Vo-Resume.pdf";
 // const pdfUrl = "https://drive.google.com/file/d/1SRPmtBGDA1oME6zAtd2GIoDIWT0E_hME/view";
 
 const useMediaQuery = (query: string) => {
