@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -41,6 +40,10 @@ export const Resume = () => {
   const [awards, setAwards] = useState<AwardItem[]>([]);
   const [isLoadingAwards, setIsLoadingAwards] = useState(true);
   const [awardsError, setAwardsError] = useState<string | null>(null);
+
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isLoadingPdf, setIsLoadingPdf] = useState(true);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   // responsive scale cho PDF (mobile nhẹ, desktop nét)
   const isSmUp = useMediaQuery("(min-width: 640px)");
@@ -120,7 +123,42 @@ export const Resume = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadResumePdf = async () => {
+      try {
+        setIsLoadingPdf(true);
+        setPdfError(null);
+
+        const data = await contentApi.getResumePdf();
+        if (!isMounted) return;
+
+        const latestPdfUrl = data[0]?.fileUrl?.trim();
+        if (latestPdfUrl) {
+          setPdfUrl(latestPdfUrl);
+        } else {
+          setPdfUrl(null);
+          setPdfError("No resume PDF uploaded yet.");
+        }
+      } catch {
+        if (!isMounted) return;
+        setPdfError("Could not load latest resume PDF.");
+        setPdfUrl(null);
+      } finally {
+        if (isMounted) setIsLoadingPdf(false);
+      }
+    };
+
+    void loadResumePdf();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleDownload = useCallback(async () => {
+    if (!pdfUrl) return;
     try {
       const res = await fetch(pdfUrl, { cache: "no-store" });
       if (!res.ok) throw new Error(`Download failed: ${res.status}`);
@@ -139,7 +177,7 @@ export const Resume = () => {
     } catch {
       window.open(pdfUrl, "_blank", "noopener,noreferrer");
     }
-  }, []);
+  }, [pdfUrl]);
 
   return (
     <div className="w-full">
@@ -199,6 +237,84 @@ export const Resume = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Résumé
+                    </p>
+                    {/* <p className="mt-1 text-base font-semibold text-slate-900">
+                      Embedded preview
+                    </p> */}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    {pdfUrl ? (
+                      <a
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+                      >
+                        Open in new tab
+                      </a>
+                    ) : (
+                      <span className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-400">
+                        No PDF available
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      disabled={!pdfUrl}
+                      className="w-full sm:w-auto rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+
+                {isLoadingPdf ? (
+                  <p className="text-xs text-slate-500">
+                    Loading Résumé...
+                  </p>
+                ) : null}
+                {pdfError ? (
+                  <p className="text-xs text-rose-600">{pdfError}</p>
+                ) : null}
+              </div>
+
+              <div className="px-3 sm:px-6 py-4 sm:py-6 bg-[#f1f0ee]">
+                {pdfUrl ? (
+                  <PdfToImages
+                    source={{ type: "url", url: pdfUrl }}
+                    scale={pdfScale}
+                  />
+                ) : (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    Resume PDF is not available yet.
+                  </div>
+                )}
+              </div>
+
+              <div className="px-5 sm:px-6 py-4 bg-white">
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  disabled={!pdfUrl}
+                  className="w-full rounded-2xl bg-primary text-white border border-primary py-2.5 text-sm font-semibold hover:opacity-95 transition disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Download Resume
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="w-full pt-8 sm:pt-10">
+        <div className="px-4 sm:px-8">
+          <div className="mx-auto max-w-5xl">
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="flex flex-col gap-3 px-5 sm:px-6 py-5 border-b border-slate-200 bg-slate-50">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Resume Priview
                     </p>
                   </div>
@@ -221,7 +337,6 @@ export const Resume = () => {
                     </button>
                   </div>
                 </div>
-
               </div>
 
               <div className="px-3 sm:px-6 py-4 sm:py-6 bg-[#f1f0ee]">
@@ -243,7 +358,7 @@ export const Resume = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* AWARDS */}
       <div
@@ -282,7 +397,6 @@ export const Resume = () => {
               </div>
             ) : null}
 
-            
             {awards.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
                 {awards.map((award) => (
@@ -298,7 +412,11 @@ export const Resume = () => {
                     </div>
 
                     <div className="space-y-3 text-center mt-6">
-                      <Link to={award.articleUrl ?? '#'} target={award.articleUrl ? "_blank" : undefined} className="block text-xl font-medium text-slate-900">
+                      <Link
+                        to={award.articleUrl ?? "#"}
+                        target={award.articleUrl ? "_blank" : undefined}
+                        className="block text-xl font-medium text-slate-900"
+                      >
                         {award.title}
                       </Link>
                       <p className="text-sm text-slate-600">
