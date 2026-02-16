@@ -83,7 +83,7 @@ export const PortfolioLayout = () => {
           </div>
 
           {/* Desktop nav */}
-          <nav className="hidden sm:flex items-center gap-2">
+          <nav className="hidden sm:flex items-center gap-2 capitalize">
             {navItems.map((i) => (
               <NavItem key={i.to} to={i.to} label={i.label} />
             ))}
@@ -146,7 +146,7 @@ export const PortfolioLayout = () => {
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      "rounded-2xl px-4 py-3 text-sm font-medium transition",
+                      "rounded-2xl px-4 py-3 text-sm font-medium transition capitalize",
                       isActive
                         ? "bg-slate-900 text-white"
                         : "text-slate-700 hover:bg-slate-100",
