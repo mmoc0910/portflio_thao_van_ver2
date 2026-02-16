@@ -7,8 +7,6 @@ import { contentApi } from "../../services/contentApi";
 import type { AwardItem } from "../../types/content";
 import { Link } from "react-router";
 
-const pdfUrl = "/resume/resume.pdf";
-
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false);
 
@@ -39,6 +37,9 @@ export const Resume = () => {
   const [awards, setAwards] = useState<AwardItem[]>([]);
   const [isLoadingAwards, setIsLoadingAwards] = useState(true);
   const [awardsError, setAwardsError] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isLoadingPdf, setIsLoadingPdf] = useState(true);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   // responsive scale cho PDF (mobile nhẹ, desktop nét)
   const isSmUp = useMediaQuery("(min-width: 640px)");
@@ -118,7 +119,45 @@ export const Resume = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadResumePdf = async () => {
+      try {
+        setIsLoadingPdf(true);
+        setPdfError(null);
+
+        const data = await contentApi.getResumePdf();
+        if (!isMounted) return;
+
+        const latestPdfUrl = data[0]?.fileUrl?.trim();
+        if (latestPdfUrl) {
+          setPdfUrl(latestPdfUrl);
+        } else {
+          setPdfUrl(null);
+          setPdfError("No resume PDF uploaded yet.");
+        }
+      } catch {
+        if (!isMounted) return;
+        setPdfError("Could not load latest resume PDF.");
+        setPdfUrl(null);
+      } finally {
+        if (isMounted) setIsLoadingPdf(false);
+      }
+    };
+
+    void loadResumePdf();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleDownload = useCallback(async () => {
+    if (!pdfUrl) {
+      return;
+    }
+
     try {
       const res = await fetch(pdfUrl, { cache: "no-store" });
       if (!res.ok) throw new Error(`Download failed: ${res.status}`);
@@ -137,7 +176,7 @@ export const Resume = () => {
     } catch {
       window.open(pdfUrl, "_blank", "noopener,noreferrer");
     }
-  }, []);
+  }, [pdfUrl]);
 
   return (
     <div className="w-full">
@@ -206,18 +245,25 @@ export const Resume = () => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
-                    >
-                      Open in new tab
-                    </a>
+                    {pdfUrl ? (
+                      <a
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+                      >
+                        Open in new tab
+                      </a>
+                    ) : (
+                      <span className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-400">
+                        No PDF available
+                      </span>
+                    )}
                     <button
                       type="button"
                       onClick={handleDownload}
-                      className="w-full sm:w-auto rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
+                      disabled={!pdfUrl}
+                      className="w-full sm:w-auto rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       Download
                     </button>
@@ -227,20 +273,31 @@ export const Resume = () => {
                 <p className="text-xs text-slate-500">
                   Tip: On mobile, preview is optimized for performance.
                 </p>
+                {isLoadingPdf ? (
+                  <p className="text-xs text-slate-500">Loading latest PDF...</p>
+                ) : null}
+                {pdfError ? <p className="text-xs text-rose-600">{pdfError}</p> : null}
               </div>
 
               <div className="px-3 sm:px-6 py-4 sm:py-6 bg-[#f1f0ee]">
-                <PdfToImages
-                  source={{ type: "url", url: pdfUrl }}
-                  scale={pdfScale}
-                />
+                {pdfUrl ? (
+                  <PdfToImages
+                    source={{ type: "url", url: pdfUrl }}
+                    scale={pdfScale}
+                  />
+                ) : (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    Resume PDF is not available yet.
+                  </div>
+                )}
               </div>
 
               <div className="px-5 sm:px-6 py-4 bg-white">
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="w-full rounded-2xl bg-primary text-white border border-primary py-2.5 text-sm font-semibold hover:opacity-95 transition"
+                  disabled={!pdfUrl}
+                  className="w-full rounded-2xl bg-primary text-white border border-primary py-2.5 text-sm font-semibold hover:opacity-95 transition disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Download Resume
                 </button>

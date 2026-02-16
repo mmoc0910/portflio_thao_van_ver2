@@ -36,3 +36,13 @@ export interface HomeIntroItem {
   _id: string;
   description: string;
 }
+
+export interface ResumePdfItem {
+  _id: string;
+  fileName: string;
+  mimeType: string;
+  size: number;
+  createdAt: string;
+  updatedAt: string;
+  fileUrl: string;
+}

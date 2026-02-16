@@ -4,6 +4,7 @@ import type {
   HomeIntroItem,
   LatestVideoItem,
   PhotoItem,
+  ResumePdfItem,
 } from "../types/content";
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)
@@ -27,4 +28,5 @@ export const contentApi = {
   getLatestVideos: () => request<LatestVideoItem[]>("/latest-videos"),
   getFeaturedWork: () => request<FeaturedWorkItem[]>("/featured-work"),
   getHomeIntros: () => request<HomeIntroItem[]>("/home-intros"),
+  getResumePdf: () => request<ResumePdfItem[]>("/resume-pdf"),
 };
