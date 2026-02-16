@@ -7,6 +7,10 @@ import { contentApi } from "../../services/contentApi";
 import type { AwardItem } from "../../types/content";
 import { Link } from "react-router";
 
+// const pdfUrl = "/resume/resume.pdf";
+const pdfUrl = "/resume/Van-Vo-Resume.pdf";
+// const pdfUrl = "https://drive.google.com/file/d/1SRPmtBGDA1oME6zAtd2GIoDIWT0E_hME/view";
+
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false);
 
@@ -37,9 +41,6 @@ export const Resume = () => {
   const [awards, setAwards] = useState<AwardItem[]>([]);
   const [isLoadingAwards, setIsLoadingAwards] = useState(true);
   const [awardsError, setAwardsError] = useState<string | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [isLoadingPdf, setIsLoadingPdf] = useState(true);
-  const [pdfError, setPdfError] = useState<string | null>(null);
 
   // responsive scale cho PDF (mobile nhẹ, desktop nét)
   const isSmUp = useMediaQuery("(min-width: 640px)");
@@ -119,45 +120,7 @@ export const Resume = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadResumePdf = async () => {
-      try {
-        setIsLoadingPdf(true);
-        setPdfError(null);
-
-        const data = await contentApi.getResumePdf();
-        if (!isMounted) return;
-
-        const latestPdfUrl = data[0]?.fileUrl?.trim();
-        if (latestPdfUrl) {
-          setPdfUrl(latestPdfUrl);
-        } else {
-          setPdfUrl(null);
-          setPdfError("No resume PDF uploaded yet.");
-        }
-      } catch {
-        if (!isMounted) return;
-        setPdfError("Could not load latest resume PDF.");
-        setPdfUrl(null);
-      } finally {
-        if (isMounted) setIsLoadingPdf(false);
-      }
-    };
-
-    void loadResumePdf();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   const handleDownload = useCallback(async () => {
-    if (!pdfUrl) {
-      return;
-    }
-
     try {
       const res = await fetch(pdfUrl, { cache: "no-store" });
       if (!res.ok) throw new Error(`Download failed: ${res.status}`);
@@ -176,7 +139,7 @@ export const Resume = () => {
     } catch {
       window.open(pdfUrl, "_blank", "noopener,noreferrer");
     }
-  }, [pdfUrl]);
+  }, []);
 
   return (
     <div className="w-full">
@@ -228,7 +191,6 @@ export const Resume = () => {
         </div>
       </div>
 
-      {/* PDF SECTION (responsive) */}
       <div className="w-full pt-8 sm:pt-10">
         <div className="px-4 sm:px-8">
           <div className="mx-auto max-w-5xl">
@@ -239,65 +201,41 @@ export const Resume = () => {
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Resume Priview
                     </p>
-                    {/* <p className="mt-1 text-base font-semibold text-slate-900">
-                      Embedded preview
-                    </p> */}
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2">
-                    {pdfUrl ? (
-                      <a
-                        href={pdfUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
-                      >
-                        Open in new tab
-                      </a>
-                    ) : (
-                      <span className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-400">
-                        No PDF available
-                      </span>
-                    )}
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full sm:w-auto text-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+                    >
+                      Open in new tab
+                    </a>
                     <button
                       type="button"
                       onClick={handleDownload}
-                      disabled={!pdfUrl}
-                      className="w-full sm:w-auto rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60"
+                      className="w-full sm:w-auto rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
                     >
                       Download
                     </button>
                   </div>
                 </div>
 
-                {/* <p className="text-xs text-slate-500">
-                  Tip: On mobile, preview is optimized for performance.
-                </p>
-                {isLoadingPdf ? (
-                  <p className="text-xs text-slate-500">Loading latest PDF...</p>
-                ) : null}
-                {pdfError ? <p className="text-xs text-rose-600">{pdfError}</p> : null}
               </div>
 
               <div className="px-3 sm:px-6 py-4 sm:py-6 bg-[#f1f0ee]">
-                {pdfUrl ? (
-                  <PdfToImages
-                    source={{ type: "url", url: pdfUrl }}
-                    scale={pdfScale}
-                  />
-                ) : (
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
-                    Resume PDF is not available yet.
-                  </div>
-                )}
+                <PdfToImages
+                  source={{ type: "url", url: pdfUrl }}
+                  scale={pdfScale}
+                />
               </div>
 
               <div className="px-5 sm:px-6 py-4 bg-white">
                 <button
                   type="button"
                   onClick={handleDownload}
-                  disabled={!pdfUrl}
-                  className="w-full rounded-2xl bg-primary text-white border border-primary py-2.5 text-sm font-semibold hover:opacity-95 transition disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-2xl bg-primary text-white border border-primary py-2.5 text-sm font-semibold hover:opacity-95 transition"
                 >
                   Download Resume
                 </button>
@@ -344,35 +282,7 @@ export const Resume = () => {
               </div>
             ) : null}
 
-            {/* {awards.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {awards.map((award) => (
-                  <article
-                    key={award._id}
-                    className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition"
-                  >
-                    <div className="relative">
-                      <img
-                        src={award.imageUrl}
-                        alt={award.title}
-                        className="w-full aspect-[4/3] object-cover"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/0 to-black/0" />
-                    </div>
-
-                    <div className="p-6 text-center space-y-2">
-                      <p className="text-lg font-semibold text-slate-900">
-                        {award.title}
-                      </p>
-                      <p className="text-sm text-slate-600">
-                        {award.description}
-                      </p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : null} */}
+            
             {awards.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
                 {awards.map((award) => (
@@ -394,21 +304,6 @@ export const Resume = () => {
                       <p className="text-sm text-slate-600">
                         {award.description}
                       </p>
-
-                      {/* {award.articleUrl ? (
-                        <a
-                          href={award.articleUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100 transition"
-                        >
-                          Read Article
-                        </a>
-                      ) : (
-                        <div className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-400">
-                          No Article Link
-                        </div>
-                      )} */}
                     </div>
                   </div>
                 ))}
