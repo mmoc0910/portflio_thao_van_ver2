@@ -1,10 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import gsap from "gsap";
+import { contentApi } from "../../services/contentApi";
 
 export const Home = () => {
   const heroRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
+  const defaultHomeIntro =
+    "";
+  const [homeIntroDescription, setHomeIntroDescription] = useState(defaultHomeIntro);
 
   useEffect(() => {
     if (!heroRef.current || !gridRef.current) return;
@@ -20,6 +24,30 @@ export const Home = () => {
       { opacity: 0, y: 16 },
       { opacity: 1, y: 0, duration: 0.85, ease: "power2.out", delay: 0.08 },
     );
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadHomeIntro = async () => {
+      try {
+        const items = await contentApi.getHomeIntros();
+        if (!isMounted || items.length === 0) return;
+
+        const introDescription = items[0]?.description?.trim();
+        if (introDescription) {
+          setHomeIntroDescription(introDescription);
+        }
+      } catch {
+        // Keep fallback content when API is unavailable.
+      }
+    };
+
+    void loadHomeIntro();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -40,34 +68,8 @@ export const Home = () => {
               stories for film & social media.
             </h1>
 
-            <p className="mt-4 max-w-[70ch] text-base text-slate-600">
-              My name is Van Vo from Quang Ngai, Vietnam, and I am currently a
-              sophomore at The University of Tulsa double majoring in Media
-              Studies and Arts, Culture & Entertainment Management.
-            </p>
-
-            <p className="mt-4 max-w-[70ch] text-base text-slate-600">
-              Growing up in an environment surrounded by arts and community
-              events, I was involved in singing, performing, hosting programs,
-              and working in broadcast media from a young age. Being part of
-              that environment led me to pursue event and communication work
-              more seriously. I became interested in planning programs,
-              coordinating teams, organizing logistics, and helping bring events
-              to life.
-            </p>
-
-            <p className="mt-4 max-w-[70ch] text-base text-slate-600">
-              Choosing to study in the United States at The University of Tulsa
-              marked a new chapter for me. At UTulsa, I expanded my skills into
-              event photography, digital promotion, media production, and film
-              projects. Through involvement in organizations such as TEDxUTulsa,
-              the Association of International Students, TUTV, and Studio 151, I
-              continue developing both the creative and organizational sides of
-              my work.
-            </p>
-            <p className="mt-4 max-w-[70ch] text-base text-slate-600">
-              For a more detailed overview of my experience, please refer to my
-              résumé.
+            <p className="mt-4 max-w-[70ch] whitespace-pre-line text-base text-slate-600">
+              {homeIntroDescription}
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">

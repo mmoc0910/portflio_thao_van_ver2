@@ -1,6 +1,7 @@
 import type {
   AwardItem,
   FeaturedWorkItem,
+  HomeIntroItem,
   LatestVideoItem,
   PhotoItem,
 } from "../types/content";
@@ -25,4 +26,5 @@ export const contentApi = {
   getAwards: () => request<AwardItem[]>("/awards"),
   getLatestVideos: () => request<LatestVideoItem[]>("/latest-videos"),
   getFeaturedWork: () => request<FeaturedWorkItem[]>("/featured-work"),
+  getHomeIntros: () => request<HomeIntroItem[]>("/home-intros"),
 };

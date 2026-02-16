@@ -31,3 +31,8 @@ export interface FeaturedWorkItem {
   projectUrl: string;
   order: number;
 }
+
+export interface HomeIntroItem {
+  _id: string;
+  description: string;
+}
