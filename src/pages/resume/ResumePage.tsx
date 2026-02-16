@@ -7,7 +7,9 @@ import { contentApi } from "../../services/contentApi";
 import type { AwardItem } from "../../types/content";
 import { Link } from "react-router";
 
-const pdfUrl = "/resume/resume.pdf";
+// const pdfUrl = "/resume/resume.pdf";
+const pdfUrl = "/resume/Van-Vo-Resume.pdf";
+// const pdfUrl = "https://drive.google.com/file/d/1SRPmtBGDA1oME6zAtd2GIoDIWT0E_hME/view";
 
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false);
@@ -149,7 +151,7 @@ export const Resume = () => {
       >
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1770297345804-e6af74ee764d?q=80&w=1600&auto=format&fit=crop"
+            src="/images/z7537774758996_9818cba82f4b4c6b3e408aa45b6c4588.jpg"
             className="h-full w-full object-cover"
             alt="Resume banner"
             loading="eager"
@@ -164,7 +166,7 @@ export const Resume = () => {
               Portfolio
             </p>
             <h1 className="mt-3 text-4xl sm:text-6xl font-semibold tracking-tight text-white">
-              Resume
+              Résumé
             </h1>
             <p className="mt-4 max-w-[70ch] text-sm sm:text-base text-white">
               View the full resume below and download a copy anytime.
@@ -198,11 +200,11 @@ export const Resume = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Resume PDF
+                      Resume Priview
                     </p>
-                    <p className="mt-1 text-base font-semibold text-slate-900">
+                    {/* <p className="mt-1 text-base font-semibold text-slate-900">
                       Embedded preview
-                    </p>
+                    </p> */}
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -224,9 +226,9 @@ export const Resume = () => {
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-500">
+                {/* <p className="text-xs text-slate-500">
                   Tip: On mobile, preview is optimized for performance.
-                </p>
+                </p> */}
               </div>
 
               <div className="px-3 sm:px-6 py-4 sm:py-6 bg-[#f1f0ee]">

@@ -31,13 +31,14 @@ export const Home = () => {
       >
         <div className="grid w-full gap-8 p-6 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            {/* <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
               Content Creator • Podcaster • Filmmaker
-            </p>
+            </p> */}
 
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
-              I create <span className="text-primary">bright</span>, modern
-              stories for film & social media.
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl uppercase">
+              {/* I create <span className="text-primary">bright</span>, modern
+              stories for film & social media. */}
+             about me
             </h1>
 
             <p className="mt-4 max-w-[70ch] text-base text-slate-600">
@@ -71,12 +72,12 @@ export const Home = () => {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href="mailto:contact.bettylam@gmail.com"
+              {/* <a
+                href="mailto:vtv.vansally@gmail.com"
                 className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition"
               >
                 Work inquiry
-              </a>
+              </a> */}
 
               <Link
                 to="/resume"
@@ -93,7 +94,7 @@ export const Home = () => {
               </Link>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            {/* <div className="mt-6 flex flex-wrap gap-2 text-xs">
               {[
                 "Video Production",
                 "Filmmaking",
@@ -108,14 +109,14 @@ export const Home = () => {
                   {t}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Featured visual */}
           <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-white">
             <div className="absolute inset-0 bg-linear-to-br from-sky-200/40 via-white to-fuchsia-200/40" />
             <img
-              src="https://images.unsplash.com/photo-1770105328550-b0e90d770c17?q=80&w=1400&auto=format&fit=crop"
+              src="/images/z7537654450271_ca56832bba176e0e44a193fca4f37fd6.jpg"
               alt="Featured"
               className="relative h-60 w-full object-cover sm:h-90"
               loading="eager"
@@ -128,22 +129,24 @@ export const Home = () => {
                 We Love You Now | Short Slasher 2025
               </p>
               <p className="mt-1 text-sm text-slate-600">
-                A short film project exploring tension, pacing, and atmosphere.
+                Behind-the-Scenes and Poster Photographer for the short film
+                project, documenting production moments and creating official
+                promotional visuals.
               </p>
 
               <div className="mt-4 flex gap-2">
                 <Link
-                  to="/media-production"
+                  to="/photography#behind"
                   className="inline-flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
                 >
                   View
                 </Link>
-                <Link
+                {/* <Link
                   to="/photography"
                   className="inline-flex flex-1 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
                 >
                   More
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -154,23 +157,26 @@ export const Home = () => {
       <section ref={gridRef} className="grid w-full gap-5 sm:grid-cols-3">
         {[
           {
-            title: "Video Production",
-            desc: "Planning, shooting, editing — cinematic storytelling with clean pacing.",
+            title: "Photography",
+            desc: "Event, behind-the-scenes, graduation, and promotional photography with a focus on storytelling and atmosphere.",
+            url: "/photography",
           },
           {
-            title: "Social Media Content",
-            desc: "Concept → script → filming → edit → posting plan for reels/shorts.",
+            title: "Social media & promotion",
+            desc: "Content planning and visual production for event promotion and campus-based campaigns.",
+            url: "/social-media-promotion",
           },
           {
-            title: "Photography & Design",
-            desc: "Visuals that keep a consistent brand & aesthetic across platforms.",
+            title: "Media production",
+            desc: "Short-form video production, maintaining cohesive visual storytelling.",
+            url: "/media-production",
           },
         ].map((c) => (
           <div
             key={c.title}
             className="rounded-[28px] border border-slate-200 bg-white/80 p-6 backdrop-blur hover:shadow-sm transition"
           >
-            <p className="text-lg font-semibold tracking-tight">{c.title}</p>
+            <p className="text-lg font-semibold tracking-tight capitalize">{c.title}</p>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               {c.desc}
             </p>
@@ -179,7 +185,10 @@ export const Home = () => {
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Available
               </span>
-              <span className="h-9 w-9 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+              <Link
+                to={c.url}
+                className="h-9 w-9 rounded-2xl bg-primary/10 text-primary flex items-center justify-center"
+              >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M7 17L17 7M17 7H9M17 7V15"
@@ -189,7 +198,7 @@ export const Home = () => {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </span>
+              </Link>
             </div>
           </div>
         ))}
@@ -244,9 +253,9 @@ export const Home = () => {
 
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white">
             <img
-              src="https://images.unsplash.com/photo-1770191954590-7292ae57b6a5?q=80&w=1400&auto=format&fit=crop"
+              src="/images/z7537656285369_f9be715d0fc0afeff92e82315151954b.jpg"
               alt="Contact"
-              className="h-60 w-full object-cover sm:h-85"
+              className="h-60 w-full object-cover sm:h-125"
               loading="lazy"
             />
           </div>

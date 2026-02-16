@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import YouTube from "react-youtube";
 import { contentApi } from "../../services/contentApi";
-import type { LatestVideoItem } from "../../types/content";
+import type { FeaturedWorkItem } from "../../types/content";
+import { Link } from "react-router";
 
 const PageHero = ({
   heroRef,
@@ -40,7 +40,7 @@ const PageHero = ({
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-600">
             Portfolio
           </p>
-          <h1 className="mt-3 text-4xl sm:text-6xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-3 text-4xl sm:text-6xl font-semibold tracking-tight text-slate-900 capitalize">
             {title}
           </h1>
           <p className="mt-4 max-w-[70ch] text-sm sm:text-base text-slate-600">
@@ -115,9 +115,13 @@ export const SocialMedia = () => {
   const heroRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
 
-  const [latestVideos, setLatestVideos] = useState<LatestVideoItem[]>([]);
-  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
-  const [videosError, setVideosError] = useState<string | null>(null);
+  // const [latestVideos, setLatestVideos] = useState<LatestVideoItem[]>([]);
+  // const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  // const [videosError, setVideosError] = useState<string | null>(null);
+
+  const [featuredWork, setFeaturedWork] = useState<FeaturedWorkItem[]>([]);
+  const [isLoadingWork, setIsLoadingWork] = useState(true);
+  const [workError, setWorkError] = useState<string | null>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -162,32 +166,58 @@ export const SocialMedia = () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
-
   useEffect(() => {
     let isMounted = true;
 
-    const loadVideos = async () => {
+    const loadFeaturedWork = async () => {
       try {
-        setIsLoadingVideos(true);
-        setVideosError(null);
+        setIsLoadingWork(true);
+        setWorkError(null);
 
-        const data = await contentApi.getLatestVideos();
+        const data = await contentApi.getFeaturedWork();
         if (!isMounted) return;
 
-        setLatestVideos(data);
+        setFeaturedWork(data);
       } catch {
         if (!isMounted) return;
-        setVideosError("Could not load latest videos.");
+        setWorkError("Could not load featured work.");
       } finally {
-        if (isMounted) setIsLoadingVideos(false);
+        if (isMounted) setIsLoadingWork(false);
       }
     };
 
-    void loadVideos();
+    void loadFeaturedWork();
+
     return () => {
       isMounted = false;
     };
   }, []);
+
+  // useEffect(() => {
+  //   let isMounted = true;
+
+  //   const loadVideos = async () => {
+  //     try {
+  //       setIsLoadingVideos(true);
+  //       setVideosError(null);
+
+  //       const data = await contentApi.getLatestVideos();
+  //       if (!isMounted) return;
+
+  //       setLatestVideos(data);
+  //     } catch {
+  //       if (!isMounted) return;
+  //       setVideosError("Could not load latest videos.");
+  //     } finally {
+  //       if (isMounted) setIsLoadingVideos(false);
+  //     }
+  //   };
+
+  //   void loadVideos();
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
 
   return (
     <div className="w-full">
@@ -196,20 +226,73 @@ export const SocialMedia = () => {
         heroRef={heroRef}
         textRef={textRef}
         title="Social media and promotion"
-        subtitle="Latest videos and promotional content — quick access to recent uploads."
-        imageUrl="https://images.unsplash.com/photo-1769112112580-cee0f8a30413?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        subtitle=""
+        imageUrl="/images/z7537710835339_30e53144387439d54a48a94d622566af.jpg"
       />
 
       {/* VIDEOS */}
       <div id="videos" className="w-full px-4 sm:px-8 pt-12 pb-10">
         <div className="mx-auto max-w-6xl">
-          <SectionTitle
+          {/* <SectionTitle
             eyebrow="Content"
             title="Latest Videos"
-            desc="Watch recent uploads and highlights."
+            // desc="Watch recent uploads and highlights."
+          /> */}
+          <SectionTitle
+            eyebrow="Work"
+            title="Featured Work"
+            // desc="A selection of projects showcasing production, editing, and storytelling."
           />
-
           <div className="mt-10">
+            {isLoadingWork ? (
+              <div className="rounded-3xl border border-slate-200 bg-white/80 p-6 text-center text-sm text-slate-600">
+                Loading featured work...
+              </div>
+            ) : null}
+
+            {workError ? (
+              <div className="rounded-3xl border border-rose-200 bg-rose-50 p-6 text-center text-sm text-rose-700">
+                {workError}
+              </div>
+            ) : null}
+
+            {!isLoadingWork && !workError && featuredWork.length === 0 ? (
+              <div className="rounded-3xl border border-slate-200 bg-white/80 p-8 text-center text-sm text-slate-600">
+                No featured work yet.
+              </div>
+            ) : null}
+
+            {featuredWork.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredWork.map((item) => (
+                  <article key={item._id} className="transition flex flex-col">
+                    <div className="relative">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full aspect-9/16 object-cover rounded-3xl"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    <div className="p-6 space-y-3 text-center flex-1 flex-col items-center justify-between">
+                      <Link
+                        to={item?.projectUrl ?? "#"}
+                        target={item?.projectUrl ? "_blank" : undefined}
+                        className="block text-xl text-slate-900 line-clamp-2"
+                      >
+                        {item.title}
+                      </Link>
+                      <p className="text-sm text-slate-600 line-clamp-3 mt-auto">
+                        {item.description}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          {/* <div className="mt-10">
             {isLoadingVideos ? (
               <div className="rounded-3xl border border-slate-200 bg-white/80 p-6 text-center text-sm text-slate-600">
                 Loading latest videos...
@@ -231,10 +314,7 @@ export const SocialMedia = () => {
             {latestVideos.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {latestVideos.map((video) => (
-                  <article
-                    key={video._id}
-                    className="transition flex flex-col"
-                  >
+                  <article key={video._id} className="transition flex flex-col">
                     <div className="relative w-full aspect-video bg-black">
                       <div className="absolute inset-0">
                         <YouTube
@@ -264,7 +344,7 @@ export const SocialMedia = () => {
                 ))}
               </div>
             ) : null}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -279,7 +359,10 @@ export const SocialMedia = () => {
             />
 
             <div className="mt-8 flex items-center justify-center gap-3">
-              <SocialIconBtn href="https://www.instagram.com/van_vtvn/" label="Instagram">
+              <SocialIconBtn
+                href="https://www.instagram.com/van_vtvn/"
+                label="Instagram"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 640 640"
@@ -289,14 +372,24 @@ export const SocialMedia = () => {
                 </svg>
               </SocialIconBtn>
 
-              <SocialIconBtn href="https://www.youtube.com/@VanVo-z1q" label="YouTube">
+              <SocialIconBtn
+                href="https://www.linkedin.com/in/van-vo-035652337"
+                label="YouTube"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 640 640"
                   className="h-6 w-6"
                 >
-                  <path d="M581.7 188.1C575.5 164.4 556.9 145.8 533.4 139.5C490.9 128 320.1 128 320.1 128C320.1 128 149.3 128 106.7 139.5C83.2 145.8 64.7 164.4 58.4 188.1C47 231 47 320.4 47 320.4C47 320.4 47 409.8 58.4 452.7C64.7 476.3 83.2 494.2 106.7 500.5C149.3 512 320.1 512 320.1 512C320.1 512 490.9 512 533.5 500.5C557 494.2 575.5 476.3 581.8 452.7C593.2 409.8 593.2 320.4 593.2 320.4C593.2 320.4 593.2 231 581.8 188.1zM264.2 401.6L264.2 239.2L406.9 320.4L264.2 401.6z" />
+                  <path d="M196.3 512L103.4 512L103.4 212.9L196.3 212.9L196.3 512zM149.8 172.1C120.1 172.1 96 147.5 96 117.8C96 103.5 101.7 89.9 111.8 79.8C121.9 69.7 135.6 64 149.8 64C164 64 177.7 69.7 187.8 79.8C197.9 89.9 203.6 103.6 203.6 117.8C203.6 147.5 179.5 172.1 149.8 172.1zM543.9 512L451.2 512L451.2 366.4C451.2 331.7 450.5 287.2 402.9 287.2C354.6 287.2 347.2 324.9 347.2 363.9L347.2 512L254.4 512L254.4 212.9L343.5 212.9L343.5 253.7L344.8 253.7C357.2 230.2 387.5 205.4 432.7 205.4C526.7 205.4 544 267.3 544 347.7L544 512L543.9 512z" />
                 </svg>
+                {/* <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 640"
+                  className="h-6 w-6"
+                >
+                  <path d="M581.7 188.1C575.5 164.4 556.9 145.8 533.4 139.5C490.9 128 320.1 128 320.1 128C320.1 128 149.3 128 106.7 139.5C83.2 145.8 64.7 164.4 58.4 188.1C47 231 47 320.4 47 320.4C47 320.4 47 409.8 58.4 452.7C64.7 476.3 83.2 494.2 106.7 500.5C149.3 512 320.1 512 320.1 512C320.1 512 490.9 512 533.5 500.5C557 494.2 575.5 476.3 581.8 452.7C593.2 409.8 593.2 320.4 593.2 320.4C593.2 320.4 593.2 231 581.8 188.1zM264.2 401.6L264.2 239.2L406.9 320.4L264.2 401.6z" />
+                </svg> */}
               </SocialIconBtn>
             </div>
           </div>

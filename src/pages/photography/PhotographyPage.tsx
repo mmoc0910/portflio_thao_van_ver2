@@ -184,8 +184,8 @@ export const Photography = () => {
         {/* soft gradient overlay (bright, no dark overlay) */}
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1770297345804-e6af74ee764d?q=80&w=1600&auto=format&fit=crop"
-            className="h-full w-full object-cover"
+            src="/images/z7537707704686_dd23e08621d0eb2513882c382faca0f5.jpg"
+            className="h-full w-full object-cover object-bottom"
             alt="Photography banner"
             loading="eager"
           />
@@ -201,29 +201,29 @@ export const Photography = () => {
             <h1 className="mt-3 text-4xl sm:text-6xl font-semibold tracking-tight text-white">
               Photography
             </h1>
-            <p className="mt-4 max-w-[70ch] text-sm sm:text-base text-white">
+            {/* <p className="mt-4 max-w-[70ch] text-sm sm:text-base text-white">
               A collection of travel photos, personal projects, and event
               photos.
-            </p>
+            </p> */}
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
               <a
                 href="#behind"
                 className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 border border-slate-200 hover:bg-white transition"
               >
-                Behind the scenes
+                Behind the Scenes
               </a>
               <a
                 href="#events"
                 className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 border border-slate-200 hover:bg-white transition"
               >
-                Campus events
+                Campus Events
               </a>
               <a
                 href="#portraits"
                 className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-slate-900 border border-slate-200 hover:bg-white transition"
               >
-                Portrait & landscape
+                Portrait & Landscape
               </a>
             </div>
           </div>
@@ -245,7 +245,7 @@ export const Photography = () => {
                   href="#behind"
                   className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
                 >
-                  Behind the scenes
+                  Behind the Scenes
                 </a>
                 <a
                   href="#events"
@@ -292,7 +292,7 @@ export const Photography = () => {
 
             {/* Sections */}
             <section id="behind" className="scroll-mt-28 space-y-6">
-              <SectionTitle eyebrow="Collection" title="Behind the scenes" />
+              <SectionTitle eyebrow="Collection" title="Behind the Scenes" />
               {behindScenes.length > 0 ? (
                 <MasonryGrid items={behindScenes} />
               ) : (

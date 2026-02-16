@@ -1,13 +1,11 @@
-
-
 import { Link, NavLink, Outlet } from "react-router";
 import { useMemo, useState } from "react";
 import { cn } from "../utils/helpers";
 
 const navItems = [
   { to: "/", label: "Home" },
-  { to: "/photography", label: "Photography" },
   { to: "/resume", label: "Resume" },
+  { to: "/photography", label: "Photography" },
   { to: "/social-media-promotion", label: "Social media & promotion" },
   { to: "/media-production", label: "Media production" },
 ];
@@ -26,7 +24,7 @@ const NavItem = ({
     onClick={onClick}
     className={({ isActive }) =>
       cn(
-        "rounded-full px-4 py-2 text-sm font-medium transition",
+        "rounded-full px-4 py-2 text-sm font-medium transition capitalize",
         isActive
           ? "bg-primary text-white shadow-sm"
           : "text-slate-700 hover:bg-slate-100",
@@ -71,12 +69,15 @@ export const PortfolioLayout = () => {
             </button>
 
             <Link to="/" className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400 shadow-sm" />
+              {/* <div className="h-10 w-10 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400 shadow-sm" /> */}
+              <img
+                src="/images/avatar.jpg"
+                alt=""
+                className="h-10 w-10 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400 shadow-sm"
+              />
               <div className="leading-tight">
                 <p className="text-xs text-slate-500">My Portfolio</p>
-                <p className="text-base font-semibold tracking-tight">
-                  Van Sally
-                </p>
+                <p className="text-base font-semibold tracking-tight">Van Vo</p>
               </div>
             </Link>
           </div>
@@ -90,7 +91,7 @@ export const PortfolioLayout = () => {
 
           <div className="hidden sm:flex items-center gap-2">
             <a
-              href="mailto:contact.bettylam@gmail.com"
+              href="mailto:vtv.vansally@gmail.com"
               className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
             >
               Contact
@@ -108,9 +109,18 @@ export const PortfolioLayout = () => {
           />
           <div className="absolute left-0 top-0 h-full w-[320px] bg-white p-6 shadow-xl">
             <div className="flex items-center justify-between">
-              <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
-                <div className="h-9 w-9 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400" />
-                <span className="font-semibold">Van Sally</span>
+              <Link
+                to="/"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2"
+              >
+                {/* <div className="h-9 w-9 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400" /> */}
+                <img
+                  src="/images/avatar.jpg"
+                  alt=""
+                  className="h-9 w-9 rounded-2xl bg-linear-to-br from-sky-400 to-fuchsia-400"
+                />
+                <span className="font-semibold">Van Vo</span>
               </Link>
               <button
                 className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition"
@@ -151,7 +161,7 @@ export const PortfolioLayout = () => {
             <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-sm font-semibold">Work inquiry</p>
               <p className="mt-1 text-sm text-slate-600">
-                contact.bettylam@gmail.com
+                vtv.vansally@gmail.com
               </p>
             </div>
           </div>
@@ -165,12 +175,18 @@ export const PortfolioLayout = () => {
 
       <footer className="w-full border-t border-slate-200/70 bg-white/70">
         <div className="flex w-full flex-col gap-2 px-4 py-6 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-          <p>© {year} Van Sally. All rights reserved.</p>
+          <p>© {year} Van Vo. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
-            <a className="hover:text-slate-900 transition" href="mailto:contact.bettylam@gmail.com">
+            <a
+              className="hover:text-slate-900 transition"
+              href="mailto:contact.bettylam@gmail.com"
+            >
               vtv.vansally@gmail.com
             </a>
-            <a className="hover:text-slate-900 transition" href="tel:+14052643204">
+            <a
+              className="hover:text-slate-900 transition"
+              href="tel:+14052643204"
+            >
               (918) 904-0346
             </a>
           </div>
